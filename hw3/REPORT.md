@@ -89,3 +89,97 @@ def one_step_opt():
     return diff, c
 ```
 закоментированный код - поиск его коэффициентов, дающих матрицу kill_image.bmp
+
+
+### Randomized SVD
+
+```python 
+def randomazid_svd(M, k=30):
+    m, n = M.shape
+    Omega = np.random.uniform(size=(n, k))
+    Y = M @ Omega
+    Q, _ = np.linalg.qr(Y)
+    B = Q.T @ M
+    u, S, V = np.linalg.svd(B, full_matrices=0)
+    U = Q @ u
+    return U, S, V
+```
+
+Реализован стандартный алгоритм рандомизированного свд https://towardsdatascience.com/intuitive-understanding-of-randomized-singular-value-decomposition-9389e27cb9de/
+Его идея в том, что можно спроецировать исходный оператор в пространство меньшей размерности и выполнить разложение в нем, существенно экономя ресурсы.
+
+В качестве метррик ухудшения качества изображения выбраны две наиболее популярные для этой задачи: PSNR и SSIM.
+
+
+**PSNR (Peak Signal-to-Noise Ratio)**:
+$$
+\text{PSNR} = 10 \log_{10} \left( \frac{255^2}{\text{MSE}} \right),
+$$
+где
+$$
+\text{MSE} = \frac{1}{mn} \sum_{i=1}^{m} \sum_{j=1}^{n} [I(i,j) - \hat{I}(i,j)]^2.
+$$
+
+**SSIM (Structural Similarity Index)**:
+$$
+\text{SSIM}(x,y) = \frac{(2\mu_x\mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)},
+$$
+где $\mu_x, \mu_y$ — средние значения, $\sigma_x^2, \sigma_y^2$ — дисперсии, $\sigma_{xy}$ — ковариация, а константы $C_1 = (0.01\cdot L)^2$, $C_2 = (0.03\cdot L)^2$ с $L=255$ (для 8-битных изображений).
+
+
+### Изображение pig1.bmp
+
+**Оригинал:**
+![Оригинал](pigs/pig1.bmp)
+
+**Визуальное сравнение:**
+| Метод / N | N = 2 | N = 4 | N = 8 |
+|:----------|:-----:|:-----:|:-----:|
+| **Стандартное SVD** | ![Стандартное SVD, N=2](compressed_2_pigs/pig1.bmp) | ![Стандартное SVD, N=4](compressed_4_pigs/pig1.bmp) | ![Стандартное SVD, N=8](compressed_8_pigs/pig1.bmp) |
+| **Рандомизированное SVD** | ![Рандомизированное SVD, N=2](compressed_random_svd2_pigs/pig1.bmp) | ![Рандомизированное SVD, N=4](compressed_random_svd4_pigs/pig1.bmp) | ![Рандомизированное SVD, N=8](compressed_random_svd8_pigs/pig1.bmp) |
+
+**Метрики качества:**
+| Метод / N | N = 2 | N = 4 | N = 8 |
+|:----------|:-----:|:-----:|:-----:|
+| **PSNR** | 34.97218<br>31.00997 | 30.61214<br>27.20247 | 27.62790<br>24.39983 |
+| **SSIM** | 0.99536<br>0.98830 | 0.98715<br>0.97134 | 0.97408<br>0.94377 |
+
+*Примечание: в каждой ячейке верхнее значение — стандартное SVD, нижнее — рандомизированное SVD.*
+
+---
+
+### Изображение pig2.bmp
+
+**Оригинал:**
+![Оригинал](pigs/pig2.bmp)
+
+**Визуальное сравнение:**
+| Метод / N | N = 2 | N = 4 | N = 8 |
+|:----------|:-----:|:-----:|:-----:|
+| **Стандартное SVD** | ![Стандартное SVD, N=2](compressed_2_pigs/pig2.bmp) | ![Стандартное SVD, N=4](compressed_4_pigs/pig2.bmp) | ![Стандартное SVD, N=8](compressed_8_pigs/pig2.bmp) |
+| **Рандомизированное SVD** | ![Рандомизированное SVD, N=2](compressed_random_svd2_pigs/pig2.bmp) | ![Рандомизированное SVD, N=4](compressed_random_svd4_pigs/pig2.bmp) | ![Рандомизированное SVD, N=8](compressed_random_svd8_pigs/pig2.bmp) |
+
+**Метрики качества:**
+| Метод / N | N = 2 | N = 4 | N = 8 |
+|:----------|:-----:|:-----:|:-----:|
+| **PSNR** | 24.49649<br>21.31018 | 21.57313<br>19.02157 | 19.46646<br>17.22541 |
+| **SSIM** | 0.96589<br>0.92612 | 0.93079<br>0.86819 | 0.88250<br>0.78631 |
+
+---
+
+### Изображение pig3.bmp
+
+**Оригинал:**
+![Оригинал](pigs/pig3.bmp)
+
+**Визуальное сравнение:**
+| Метод / N | N = 2 | N = 4 | N = 8 |
+|:----------|:-----:|:-----:|:-----:|
+| **Стандартное SVD** | ![Стандартное SVD, N=2](compressed_2_pigs/pig3.bmp) | ![Стандартное SVD, N=4](compressed_4_pigs/pig3.bmp) | ![Стандартное SVD, N=8](compressed_8_pigs/pig3.bmp) |
+| **Рандомизированное SVD** | ![Рандомизированное SVD, N=2](compressed_random_svd2_pigs/pig3.bmp) | ![Рандомизированное SVD, N=4](compressed_random_svd4_pigs/pig3.bmp) | ![Рандомизированное SVD, N=8](compressed_random_svd8_pigs/pig3.bmp) |
+
+**Метрики качества:**
+| Метод / N | N = 2 | N = 4 | N = 8 |
+|:----------|:-----:|:-----:|:-----:|
+| **PSNR** | 24.43352<br>21.47369 | 22.29849<br>19.51263 | 20.55562<br>18.03839 |
+| **SSIM** | 0.97933<br>0.95812 | 0.96574<br>0.93252 | 0.94798<br>0.90267 |
