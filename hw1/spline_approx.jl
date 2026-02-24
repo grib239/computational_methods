@@ -5,11 +5,11 @@ using Plots
 
 function build_knots(a, b, step)
     n = round(Int, (b - a) / step)
-    return range(a - 2step, b + 2step, length=n+5)
+    return range(a - 3step, b + 3step, length=n+7)
 end
 
 function fine_grid(a, b, step)
-    return range(a + 2step, b - 2step, step=step/10)
+    return range(a, b, step=step/10)
 end
 
 function b_spline(i, degree, x, knots)
@@ -34,10 +34,10 @@ function variation_reducing(a, b, step, func, x)
     n = round(Int, (b - a) / step)
     knots = build_knots(a, b, step)
     result = 0.0
-    @threads for i in 1:(n+2)
-        center = knots[i] + 1.5step
+    for i in 1:(n+3)
+        center = knots[i + 2]
         coeff = func(center)
-        result += coeff * b_spline(i-1, 2, x, knots)
+        result += coeff * b_spline(i-1, 3, x, knots)
     end
     return result
 end
@@ -46,21 +46,15 @@ function three_point_scheme(a, b, step, func, x)
     n = round(Int, (b - a) / step)
     knots = build_knots(a, b, step)
     result = 0.0
-    @threads for i in 1:(n+2)
+    for i in 1:(n+3)
         p1 = knots[i+1]
-        p3 = knots[i+2]
-        p2 = (p1 + p3) / 2
-        if i == 1
-            w = [1.0, 0.0, 0.0]
-        elseif i == n+2
-            w = [0.0, 0.0, 1.0]
-        else
-            w = 0.5 * [-1.0, 4.0, -1.0]
-        end
+        p2 = knots[i+2]
+        p3 = knots[i+3]
+        w =  [-1.0, 8.0, -1.0] / 6.0
         pts = [p1, p2, p3]
         valid_idx = findall(p -> try func(p); true catch e; false end, pts)
         coeff = sum(w[valid_idx] .* func.(pts[valid_idx]))
-        result += coeff * b_spline(i-1, 2, x, knots)
+        result += coeff * b_spline(i-1, 3, x, knots)
     end
     return result
 end
@@ -97,26 +91,27 @@ test_funcs = [
 
 function run_tests(a, b, step)
     for (name, f) in test_funcs
-        grid = fine_grid(a, b, step)
-        err_var = Float64[]
-        err_three = Float64[]
-        @threads for x in grid
-            exact = f(x)
-            approx_var = variation_reducing(a, b, step, f, x)
-            approx_three = three_point_scheme(a, b, step, f, x)
-            push!(err_var, abs(exact - approx_var))
-            push!(err_three, abs(exact - approx_three))
-        end
-        println(name, 
-            "\n  Вариационная: ", maximum(err_var),
-            "\n  Трёхточечная: ", maximum(err_three))
-        plot_approximation(a, b, step, f, name)
+        #grid = fine_grid(a, b, step)
+        #err_var = Float64[]
+        #err_three = Float64[]
+        #for x in grid
+        #    exact = f(x)
+        #    approx_var = variation_reducing(a, b, step, f, x)
+        #    approx_three = three_point_scheme(a, b, step, f, x)
+        #    push!(err_var, abs(exact - approx_var))
+        #    push!(err_three, abs(exact - approx_three))
+        #end
+        #println(name, 
+        #    "\n  Вариационная: ", maximum(err_var),
+        #    "\n  Трёхточечная: ", maximum(err_three))
+        #plot_approximation(a, b, step, f, name)
+        #
         name = "noisy_" * name
         f = add_gaussian_noise(f)
         grid = fine_grid(a, b, step)
         err_var = Float64[]
         err_three = Float64[]
-        @threads for x in grid
+        for x in grid
             exact = f(x)
             approx_var = variation_reducing(a, b, step, f, x)
             approx_three = three_point_scheme(a, b, step, f, x)
