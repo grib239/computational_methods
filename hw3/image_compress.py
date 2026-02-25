@@ -12,6 +12,11 @@ def read_bmp(path):
     image_array = np.array(img, dtype=np.float32)
     return image_array
 
+def read_bmp_rgb(path):
+    img = Image.open(path).convert('RGB')
+    image_array = np.array(img, dtype=np.float32)
+    return image_array
+
 def read_bmp_in64(path):
     img = Image.open(path).convert('L')
     image_array = np.array(img, dtype=np.float64)
@@ -20,6 +25,10 @@ def read_bmp_in64(path):
 
 def save_bmp(matrix, output_path):
     img = Image.fromarray(matrix.astype(np.uint8))
+    img.save(output_path)
+
+def save_bmp_rgb(matrix, output_path):
+    img = Image.fromarray(matrix.astype(np.uint8), mode='RGB')
     img.save(output_path)
 
 
@@ -66,6 +75,30 @@ def load_custom(filename):
     return U, S, Vt, (rows, cols)
 
 
+def save_custom_rgb(channels_data, original_shape, filename):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, 'wb') as f:
+        rows, cols = original_shape[:2]
+        rank = channels_data[0][0].shape[1]
+        f.write(struct.pack('IIII', rows, cols, rank, 3))
+        for U, S, Vt in channels_data:
+            f.write(S.astype(np.float32).tobytes())
+            f.write(U.astype(np.float32).tobytes())
+            f.write(Vt.astype(np.float32).tobytes())
+
+
+def load_custom_rgb(filename):
+    with open(filename, 'rb') as f:
+        rows, cols, rank, channels = struct.unpack('IIII', f.read(16))
+        channels_data = []
+        for _ in range(channels):
+            S = np.frombuffer(f.read(rank * 4), dtype=np.float32)
+            U = np.frombuffer(f.read(rows * rank * 4), dtype=np.float32).reshape(rows, rank)
+            Vt = np.frombuffer(f.read(rank * cols * 4), dtype=np.float32).reshape(rank, cols)
+            channels_data.append((U, S, Vt))
+    return channels_data, (rows, cols, channels)
+
+
 def compress_image(path_to_bmp, output_custom, compression_level = 2):
     matrix = read_bmp(path_to_bmp)
     U, S, Vt, rank = compute_compression(matrix, compression_level, randomazid_svd)
@@ -78,9 +111,32 @@ def compress_image(path_to_bmp, output_custom, compression_level = 2):
 def decompress_image(path_custom, output_bmp):
     U, S, Vt, shape = load_custom(path_custom)
     reconstructed = (U @ np.diag(S) @ Vt).clip(0, 255)
-    
+
     save_bmp(reconstructed, output_bmp)
     print(f"Decompressed: shape={shape}")
+
+
+def compress_image_rgb(path_to_bmp, output_custom, compression_level = 2):
+    matrix = read_bmp_rgb(path_to_bmp)
+    channels_data = []
+    for c in range(3):
+        channel = matrix[:, :, c]
+        U, S, Vt, rank = compute_compression(channel, compression_level, randomazid_svd)
+        channels_data.append((U, S, Vt))
+
+    save_custom_rgb(channels_data, matrix.shape, output_custom)
+    print(f"Compressed RGB: rank={rank}, compression factor≥{compression_level}")
+    return rank
+
+def decompress_image_rgb(path_custom, output_bmp):
+    channels_data, shape = load_custom_rgb(path_custom)
+    reconstructed = np.zeros((shape[0], shape[1], 3), dtype=np.float32)
+    for c in range(3):
+        U, S, Vt = channels_data[c]
+        reconstructed[:, :, c] = (U @ np.diag(S) @ Vt).clip(0, 255)
+
+    save_bmp_rgb(reconstructed, output_bmp)
+    print(f"Decompressed RGB: shape={shape}")
 
 
 def calculate_polynom(x, y, c=[0]*10):
@@ -138,15 +194,17 @@ def SSIM(M, N):
     c2 = (0.03 * 255) ** 2
     return (2*M.mean() * N.mean() + c1)*(2 * cov + c2) / (N.mean() ** 2 + M.mean() ** 2 + c1) / (dM + dN + c2)
 
-"""
+
 input_files = ["pigs/pig1.bmp", "pigs/pig2.bmp", "pigs/pig3.bmp"]
 comp_values = [2, 4, 8]
 for compression_level in comp_values:
     for i in range(len(input_files)):
         file = input_files[i]
 
-        compress_image(file, f"compressed_random_svd{compression_level}_{file[:-4]}", compression_level)
-        decompress_image(f"compressed_random_svd{compression_level}_{file[:-4]}", (f"compressed_random_svd{compression_level}_{file}"))
+        compress_image_rgb(file, f"compressed_rgb{compression_level}_{file[:-4]}", compression_level)
+        decompress_image_rgb(f"compressed_rgb{compression_level}_{file[:-4]}", (f"compressed_rgb{compression_level}_{file}"))
+
+
 """
 for i in [2, 4, 8]:
     folder1 = f"compressed_random_svd{i}_pigs"
@@ -162,7 +220,7 @@ for i in [2, 4, 8]:
         print("=====SSIM======")
         print(f"randomized: {SSIM(A, B)}")
         print(f"standard  : {SSIM(A, C)}")
-
+"""
 
 """
 M = read_bmp_in64("kill_image.bmp")
