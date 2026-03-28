@@ -1,0 +1,109 @@
+step,function_name,noise,method,max_error
+0.8,x^3 - 2x + 1,false,variation_reducing,6.400000000000091
+0.8,x^3 - 2x + 1,false,five_point,6.821210263296962e-13
+0.8,x^3 - 2x + 1,true,variation_reducing,6.409678307096101
+0.8,x^3 - 2x + 1,true,five_point,0.1008784794783324
+0.8,x^4,false,variation_reducing,128.13653333333423
+0.8,x^4,false,five_point,0.0938666666716017
+0.8,x^4,true,variation_reducing,128.14841981261088
+0.8,x^4,true,five_point,0.14321056388653375
+0.8,x^2,false,variation_reducing,0.21333333333335247
+0.8,x^2,false,five_point,5.684341886080802e-14
+0.8,x^2,true,variation_reducing,0.2332019744599183
+0.8,x^2,true,five_point,0.09394124690464345
+0.8,x,false,variation_reducing,1.7763568394002505e-15
+0.8,x,false,five_point,5.329070518200751e-15
+0.8,x,true,variation_reducing,0.020801761604136715
+0.8,x,true,five_point,0.08952383263171093
+0.8,sin(x),false,variation_reducing,0.10217472206855849
+0.8,sin(x),false,five_point,0.003993673556236699
+0.8,sin(x),true,variation_reducing,0.11391643903297566
+0.8,sin(x),true,five_point,0.07653393125692809
+0.8,exp(x),false,variation_reducing,2477.499767585374
+0.8,exp(x),false,five_point,63.92108472327163
+0.8,exp(x),true,variation_reducing,2477.5088551581357
+0.8,exp(x),true,five_point,63.9095848716679
+0.8,|10x|^0.5,false,variation_reducing,2.061004233964073
+0.8,|10x|^0.5,false,five_point,3.794239565657323
+0.8,|10x|^0.5,true,variation_reducing,2.056859146060714
+0.8,|10x|^0.5,true,five_point,3.7970899854196465
+0.8,rung_1_(1+25x²),false,variation_reducing,0.8072072072072073
+0.8,rung_1_(1+25x²),false,five_point,1.6767023015130178
+0.8,rung_1_(1+25x²),true,variation_reducing,0.8037448142605973
+0.8,rung_1_(1+25x²),true,five_point,1.6695055152959868
+0.8,sin(1_x),false,variation_reducing,1.6122345829408404
+0.8,sin(1_x),false,five_point,2.9490280733127654
+0.8,sin(1_x),true,variation_reducing,1.6036136115605923
+0.8,sin(1_x),true,five_point,2.912362313818063
+0.253,x^3 - 2x + 1,false,variation_reducing,0.6408629874895269
+0.253,x^3 - 2x + 1,false,five_point,1.1281047136435518e-6
+0.253,x^3 - 2x + 1,true,variation_reducing,0.6457814554679544
+0.253,x^3 - 2x + 1,true,five_point,0.09349435645606263
+0.253,x^4,false,variation_reducing,12.818639246348539
+0.253,x^4,false,five_point,0.0009411939317942597
+0.253,x^4,true,variation_reducing,12.818512419746185
+0.253,x^4,true,five_point,0.08030353788478806
+0.253,x^2,false,variation_reducing,0.021362137208797094
+0.253,x^2,false,five_point,1.095002062356798e-7
+0.253,x^2,true,variation_reducing,0.04297297278533563
+0.253,x^2,true,five_point,0.09914928290088082
+0.253,x,false,variation_reducing,1.0424805907405243e-8
+0.253,x,false,five_point,1.0424802354691565e-8
+0.253,x,true,variation_reducing,0.023478921432869004
+0.253,x,true,five_point,0.08909510148230027
+0.253,sin(x),false,variation_reducing,0.010634788887674773
+0.253,sin(x),false,five_point,3.9306110310000086e-5
+0.253,sin(x),true,variation_reducing,0.030735852873564506
+0.253,sin(x),true,five_point,0.0921550825932384
+0.253,exp(x),false,variation_reducing,233.46825507980975
+0.253,exp(x),false,five_point,0.7595522984447598
+0.253,exp(x),true,variation_reducing,233.46930824753872
+0.253,exp(x),true,five_point,0.7858039432285295
+0.253,|10x|^0.5,false,variation_reducing,0.9046993762344768
+0.253,|10x|^0.5,false,five_point,1.879373726614324
+0.253,|10x|^0.5,true,variation_reducing,0.8914241173226254
+0.253,|10x|^0.5,true,five_point,1.900800548227608
+0.253,rung_1_(1+25x²),false,variation_reducing,0.3058003870599496
+0.253,rung_1_(1+25x²),false,five_point,0.33144350859982685
+0.253,rung_1_(1+25x²),true,variation_reducing,0.3019466479510762
+0.253,rung_1_(1+25x²),true,five_point,0.33674089660189577
+0.253,sin(1_x),false,variation_reducing,1.025591178465075
+0.253,sin(1_x),false,five_point,2.031365306549625
+0.253,sin(1_x),true,variation_reducing,1.0312963942707172
+0.253,sin(1_x),true,five_point,2.0147741719327126
+0.08,x^3 - 2x + 1,false,variation_reducing,0.06400000000007822
+0.08,x^3 - 2x + 1,false,five_point,1.2505552149377763e-12
+0.08,x^3 - 2x + 1,true,variation_reducing,0.08072681350256516
+0.08,x^3 - 2x + 1,true,five_point,0.09241285888498396
+0.08,x^4,false,variation_reducing,1.2800136533332989
+0.08,x^4,false,five_point,9.386669262312353e-6
+0.08,x^4,true,variation_reducing,1.2857639385692892
+0.08,x^4,true,five_point,0.09875158715283305
+0.08,x^2,false,variation_reducing,0.002133333333375731
+0.08,x^2,false,five_point,1.1368683772161603e-13
+0.08,x^2,true,variation_reducing,0.025532925757627112
+0.08,x^2,true,five_point,0.08662156475931848
+0.08,x,false,variation_reducing,3.552713678800501e-15
+0.08,x,false,five_point,8.881784197001252e-15
+0.08,x,true,variation_reducing,0.02527852617110682
+0.08,x,true,five_point,0.09703457128015458
+0.08,sin(x),false,variation_reducing,0.0010661920807011338
+0.08,sin(x),false,five_point,3.9118301364826635e-7
+0.08,sin(x),true,variation_reducing,0.030237758692215455
+0.08,sin(x),true,five_point,0.10036465901990421
+0.08,exp(x),false,variation_reducing,23.507430132951413
+0.08,exp(x),false,five_point,0.008274995594547363
+0.08,exp(x),true,variation_reducing,23.50545519013758
+0.08,exp(x),true,five_point,0.08549638980484531
+0.08,|10x|^0.5,false,variation_reducing,0.29814239699997197
+0.08,|10x|^0.5,false,five_point,0.9469959671164936
+0.08,|10x|^0.5,true,variation_reducing,0.3052490069798136
+0.08,|10x|^0.5,true,five_point,0.939147033507505
+0.08,rung_1_(1+25x²),false,variation_reducing,0.04597701149425282
+0.08,rung_1_(1+25x²),false,five_point,0.0031961182629723917
+0.08,rung_1_(1+25x²),true,variation_reducing,0.057590933940039
+0.08,rung_1_(1+25x²),true,five_point,0.10221471568394454
+0.08,sin(1_x),false,variation_reducing,1.3987699709015975
+0.08,sin(1_x),false,five_point,3.7029784790606035
+0.08,sin(1_x),true,variation_reducing,1.3921905706745292
+0.08,sin(1_x),true,five_point,3.6844168491612286
