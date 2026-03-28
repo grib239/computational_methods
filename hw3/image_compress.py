@@ -8,14 +8,21 @@ import os
 
 
 def read_bmp(path):
-    img = Image.open(path).convert('L')
+    img = Image.open(path).convert('RGB')
     image_array = np.array(img, dtype=np.float32)
     return image_array
+    return image_array[:, :, 0], image_array[:, :, 1], image_array[:, :, 2]
 
 def read_bmp_in64(path):
-    img = Image.open(path).convert('L')
-    image_array = np.array(img, dtype=np.float64)
-    return image_array
+    img = Image.open(path).convert('RGB')
+
+    img_array = np.array(img, dtype=np.float64)
+    
+    red_channel   = img_array[:, :, 0]
+    green_channel = img_array[:, :, 1]
+    blue_channel  = img_array[:, :, 2]
+
+    return red_channel, green_channel, blue_channel
 
 
 def save_bmp(matrix, output_path):
@@ -31,7 +38,7 @@ def compute_svd_scipy(matrix, k=0):
 
 
 def compute_compression(matrix, compression_level = 2, svd_computer=compute_svd_numpy):
-    rows, cols = matrix.shape
+    rows, cols, _ = matrix.shape
     original_size = rows * cols 
 
     rank = max(1, min(rows, cols, original_size // (compression_level * (rows + cols + 1)*4)))
@@ -68,7 +75,7 @@ def load_custom(filename):
 
 def compress_image(path_to_bmp, output_custom, compression_level = 2):
     matrix = read_bmp(path_to_bmp)
-    U, S, Vt, rank = compute_compression(matrix, compression_level, randomazid_svd)
+    U, S, Vt, rank = compute_compression(matrix, compression_level, compute_svd_numpy)
 
     save_custom(U, S, Vt, matrix.shape, output_custom)
     
@@ -138,15 +145,16 @@ def SSIM(M, N):
     c2 = (0.03 * 255) ** 2
     return (2*M.mean() * N.mean() + c1)*(2 * cov + c2) / (N.mean() ** 2 + M.mean() ** 2 + c1) / (dM + dN + c2)
 
-"""
+
 input_files = ["pigs/pig1.bmp", "pigs/pig2.bmp", "pigs/pig3.bmp"]
 comp_values = [2, 4, 8]
 for compression_level in comp_values:
     for i in range(len(input_files)):
         file = input_files[i]
 
-        compress_image(file, f"compressed_random_svd{compression_level}_{file[:-4]}", compression_level)
-        decompress_image(f"compressed_random_svd{compression_level}_{file[:-4]}", (f"compressed_random_svd{compression_level}_{file}"))
+        compress_image(file, f"compressed_red{compression_level}_{file[:-4]}", compression_level)
+        decompress_image(f"compressed_red{compression_level}_{file[:-4]}", (f"compressed_red{compression_level}_{file}"))
+
 """
 for i in [2, 4, 8]:
     folder1 = f"compressed_random_svd{i}_pigs"
@@ -162,6 +170,8 @@ for i in [2, 4, 8]:
         print("=====SSIM======")
         print(f"randomized: {SSIM(A, B)}")
         print(f"standard  : {SSIM(A, C)}")
+
+"""
 
 
 """
